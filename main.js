@@ -2,6 +2,7 @@ let App = Vue.createApp({
     data() {
         return {
             completedTest: false,
+            // completedTest: true, // dev --> switch back to false
             personalityScores: {
                 "Hardy": 0, 
                 "Docile": 0,
@@ -33,7 +34,9 @@ let App = Vue.createApp({
                 "Lonely": ["Cubone", "Psyduck"],
                 "Quirky": ["Meowth", "Treecko"]
             },
-            finalPokemon: "",
+            finalPokemon: "", 
+            //finalObject: { "pokemon": "Charmander", "personality": "Hardy", "gender": 0 }, // dev --> switch back to {}
+            finalObject: {},
             questions: [
                 [
                     {
@@ -448,9 +451,12 @@ let App = Vue.createApp({
                 gender = 1;
             }
             
-            this.finalPokemon = this.resultPokemon[personality[Math.floor(Math.random() * personality.length)]][gender];
+            let finalPersonality = personality[Math.floor(Math.random() * personality.length)];
+            this.finalPokemon = this.resultPokemon[finalPersonality][gender];
             this.completedTest = true;
-            console.log(this.finalPokemon);
+
+            this.finalObject = {"pokemon": this.finalPokemon, "personality": finalPersonality, "gender": gender};
+            console.log(this.finalObject);
         }
     }
 });
@@ -531,21 +537,33 @@ App.component("answer", {
 });
 
 App.component("result", {
-    props:["pokemon"],
+    props:["final"],
     data() {
         return {
 
         }
     },
     template: `<div>
-        {{ pokemon }}
-        <img :src="computeImage">
+        <img :src="computeImage" class="myImage" :style="computeBorder">
+        <p>{{ final.pokemon }}<p>
+        <p>{{ final.personality }}<p>
     </div>
     `,
     computed: {
         computeImage() {
-            console.log("images/" + this.pokemon + ".png")
-            return "images/" + this.pokemon + ".png";
+            return "images/" + this.final.pokemon + ".png";
+        },
+        computeBorder() {
+            let color = "";
+
+            if (this.final.gender == 0) {
+                color = "#6080F8";
+            }
+            
+            else {
+                color = "#F770C0";
+            }
+            return "border: 8px solid " + color;
         }
     },
     methods: {

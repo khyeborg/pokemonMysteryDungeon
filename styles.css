@@ -48,3 +48,8 @@ html, body {
 .answer_div:hover {
     opacity: 0.5;
 }
+
+.myImage {
+    width: 200px;
+    border-radius: 40px;
+}

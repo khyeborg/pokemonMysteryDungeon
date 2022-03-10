@@ -16,8 +16,16 @@
     <div id="app">
         <h1>Pokemon Personality Test</h1>
 
-        <question v-if="!completedTest" @selected-answer2="answerSelected2" @selected-answer-final="answerSelectedFinal" @pokemon-determined="pokemonDetermined" :questions="questions"></question>
-        <result v-else :pokemon="finalPokemon"></result>
+        <div>{{lala}}</div>
+
+        <question v-if="!completedTest" 
+                  @selected-answer2="answerSelected2" 
+                  @selected-answer-final="answerSelectedFinal" 
+                  @pokemon-determined="pokemonDetermined" 
+                  :questions="questions">
+        </question>
+
+        <result v-else :final="finalObject"></result>
     </div>
 </body>
 </html>

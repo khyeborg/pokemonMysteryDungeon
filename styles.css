@@ -2,7 +2,45 @@ html, body {
     font-family: Helvetica;
     text-align: center;
     cursor: default;
+    margin: 0px;
+    padding: 0px;
 }
+
+body {
+    width: 100%;
+    /* background-image: url("images/6.png"); */
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center top;
+}
+
+h1 {
+    padding-top: 20px;
+    padding-bottom: 0px;
+    margin: 0px;
+}
+
+#background_purpose {
+    width: 100vw;
+    height: 100vh;;
+    background-color: rgba(255, 255, 255, 0.35);
+}
+
+
+.description {
+    font-size: 24px;
+    /* background-color: rgba(255, 255, 255, 0.3);
+    width: 500px;
+    padding: 10px;
+    margin: 0px; */
+}
+
+/* #description_div {
+    margin: 0px;
+    padding: 0px;
+    display: flex;
+    justify-content: center;
+} */
 
 .question_big_div {
     display: flex;
@@ -52,4 +90,80 @@ html, body {
 .myImage {
     width: 200px;
     border-radius: 40px;
+}
+
+.result_div {
+    display: flex;
+    justify-content: center;
+    padding-bottom: 20px;
+}
+
+.result_div_description {
+    text-align: left;
+    padding-left: 75px;
+    /* padding-right: 50px; */
+    padding-top: 50px;
+    font-size: 24px;
+    /* font-weight: bold; */
+    line-height: 1;
+}
+
+.partnerImage {
+    width: 120px;
+    /* border-radius: 40px; */
+    padding: 8px;
+}
+
+.partnerImage:hover {
+    opacity: 0.6;
+}
+
+.partners_div {
+    max-width: 1000px;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin: auto;
+}
+
+#white_font {
+    color: white;
+}
+
+.partners_name {
+    font-size: 14px;
+    padding-top: 0px;
+    margin-top: 2px;
+    margin-bottom: 10px;
+}
+
+#choose {
+    font-size: 20px;
+}
+
+#final_result_div {
+    display: flex;
+    justify-content: space-evenly;
+    padding-top: 20px;
+}
+
+.result_div_description2 {
+    text-align: left;
+    padding-left: 55px;
+    /* padding-right: 50px; */
+    padding-top: 50px;
+    font-size: 24px;
+    /* font-weight: bold; */
+    line-height: 1;
+}
+
+.you_your_partner {
+    font-size: 28px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    margin-top: 0px;
+}
+
+.bottom_space {
+    height: 50px;
 }

@@ -1,3 +1,6 @@
+let body = document.querySelector("body");
+body.style["background-image"] = "url('images/1.png')";
+
 let App = Vue.createApp({
     data() {
         return {
@@ -20,22 +23,22 @@ let App = Vue.createApp({
                 "Gender": 0
             },
             resultPokemon: {
-                "Hardy": ["Charmander", "Pikachu"], 
-                "Docile": ["Bulbasaur", "Chikorita"],
-                "Brave": ["Machop", "Charmander"],
-                "Jolly": ["Squirtle", "Totodile"],
-                "Impish": ["Pikachu", "Cubone"],
-                "Naive": ["Totodile", "Eevee"],
-                "Timid": ["Cyndaquil", "Mudkip"],
-                "Hasty": ["Torchic", "Skitty"],
-                "Sassy": ["Treecko", "Torchic"],
-                "Calm": ["Mudkip", "Bulbasaur"],
-                "Relaxed": ["Psyduck", "Squirtle"],
-                "Lonely": ["Cubone", "Psyduck"],
-                "Quirky": ["Meowth", "Treecko"]
+                "Hardy":   [ { name: "Charmander", type: "Fire" },     { name: "Pikachu",    type: "Electric" } ], 
+                "Docile":  [ { name: "Bulbasaur",  type: "Grass" },    { name: "Chikorita",  type: "Grass" } ],
+                "Brave":   [ { name: "Machop",     type: "Fighting" }, { name: "Charmander", type: "Fire" } ],
+                "Jolly":   [ { name: "Squirtle",   type: "Water" },    { name: "Totodile",   type: "Water" } ],
+                "Impish":  [ { name: "Pikachu",    type: "Electric" }, { name: "Cubone",     type: "Ground" } ],
+                "Naive":   [ { name: "Totodile",   type: "Water" },    { name: "Eevee",      type: "Normal" } ],
+                "Timid":   [ { name: "Cyndaquil",  type: "Fire" },     { name: "Mudkip",     type: "Water" } ],
+                "Hasty":   [ { name: "Torchic",    type: "Fire" },     { name: "Skitty",     type: "Normal" } ],
+                "Sassy":   [ { name: "Treecko",    type: "Grass" },    { name: "Torchic",    type: "Fire" } ],
+                "Calm":    [ { name: "Mudkip",     type: "Water" },    { name: "Bulbasaur",  type: "Grass" } ],
+                "Relaxed": [ { name: "Psyduck",    type: "Water" },    { name: "Squirtle",   type: "Water" } ],
+                "Lonely":  [ { name: "Cubone",     type: "Ground" },   { name: "Psyduck",    type: "Water" } ],
+                "Quirky":  [ { name: "Meowth",     type: "Normal" },   { name: "Treecko",    type: "Grass" } ]
             },
             finalPokemon: "", 
-            //finalObject: { "pokemon": "Charmander", "personality": "Hardy", "gender": 0 }, // dev --> switch back to {}
+            // finalObject: { "pokemon": "Charmander", "personality": "Hardy", "gender": 0, "type": "Fire" }, // dev --> switch back to {}
             finalObject: {},
             questions: [
                 [
@@ -410,6 +413,9 @@ let App = Vue.createApp({
             // console.log(this.personalityScores)
         }, 
         answerSelectedFinal(index, currentQuestion, currentRandomNumber) {
+            // final background image
+            body.style["background-image"] = "url('')";
+            
             let tempOutcome = this.questions[currentQuestion][currentRandomNumber].outcomes[index];
             let tempOutcomeKeys = Object.keys(tempOutcome);
             let tempOutcomeValues = Object.values(tempOutcome);
@@ -418,7 +424,7 @@ let App = Vue.createApp({
                 this.personalityScores[tempOutcomeKeys[i]] = tempOutcomeValues[i];
             }
 
-            console.log(this.personalityScores);
+            // console.log(this.personalityScores);
 
             this.determinePokemon();
         },
@@ -428,6 +434,7 @@ let App = Vue.createApp({
             let maxValue = 0;
             let personality = [];
             let gender = 0;
+            let type = "";
 
             for (let i = 0; i < personalityScoresArray.length - 1; i++) {
                 if (personalityScoresValueArray[i] > maxValue) {
@@ -452,11 +459,18 @@ let App = Vue.createApp({
             }
             
             let finalPersonality = personality[Math.floor(Math.random() * personality.length)];
-            this.finalPokemon = this.resultPokemon[finalPersonality][gender];
+            this.finalPokemon = this.resultPokemon[finalPersonality][gender].name;
+            type = this.resultPokemon[finalPersonality][gender].type;
             this.completedTest = true;
 
-            this.finalObject = {"pokemon": this.finalPokemon, "personality": finalPersonality, "gender": gender};
-            console.log(this.finalObject);
+            this.finalObject = { 
+                                "pokemon": this.finalPokemon, 
+                                "personality": finalPersonality, 
+                                "gender": gender, 
+                                "type": type 
+                               };
+
+            // console.log(this.finalObject);
         }
     }
 });
@@ -467,7 +481,8 @@ App.component("question", {
         return {
             questionsNumbers: [],
             currentQuestion: 0,
-            currentRandomNumber: 0
+            currentRandomNumber: 0,
+            backgroundNum: 1
         }
     },
     created() {
@@ -511,12 +526,22 @@ App.component("question", {
             if (this.currentQuestion < 8) {
                 this.$emit("selected-answer2", index, this.questionsNumbers[this.currentQuestion], this.currentRandomNumber);
                 this.currentQuestion++;
+                this.computeBackgroundImage()
             }
 
             // when it is the last question
             else {
                 this.$emit("selected-answer-final", index, this.questionsNumbers[this.currentQuestion], this.currentRandomNumber);
             }
+        },
+        computeBackgroundImage() {
+            this.backgroundNum++;
+
+            if (this.backgroundNum == 7) {
+                this.backgroundNum = 1;
+            }
+
+            body.style["background-image"] = "url('images/" + this.backgroundNum + ".png')";
         }
     }
 });
@@ -540,18 +565,118 @@ App.component("result", {
     props:["final"],
     data() {
         return {
-
+            partners: [
+                {
+                    myType: "Grass",
+                    availablePartners: [ { name: "Charmander", type: "Fire" }, { name: "Cyndaquil", type: "Fire" }, { name: "Torchic", type: "Fire" }, { name: "Squirtle", type: "Water" }, { name: "Totodile", type: "Water" }, { name: "Mudkip", type: "Water" }, { name: "Pikachu", type: "Electric" } ]
+                },
+                {
+                    myType: "Fire",
+                    availablePartners: [ { name: "Bulbasaur", type: "Grass" }, { name: "Chikorita", type: "Grass" }, { name: "Treecko", type: "Grass" }, { name: "Squirtle", type: "Water" }, { name: "Totodile", type: "Water" }, { name: "Mudkip", type: "Water" }, { name: "Pikachu", type: "Electric" } ]
+                },
+                {
+                    myType: "Water",
+                    availablePartners: [ { name: "Bulbasaur", type: "Grass" }, { name: "Chikorita", type: "Grass" }, { name: "Treecko", type: "Grass" }, { name: "Charmander", type: "Fire" }, { name: "Cyndaquil", type: "Fire" }, { name: "Torchic", type: "Fire" }, { name: "Pikachu", type: "Electric" } ]
+                },
+                {
+                    myType: "Electric",
+                    availablePartners: [ { name: "Bulbasaur", type: "Grass" }, { name: "Chikorita", type: "Grass" }, { name: "Treecko", type: "Grass" }, { name: "Charmander", type: "Fire" }, { name: "Cyndaquil", type: "Fire" }, { name: "Torchic", type: "Fire" }, { name: "Squirtle", type: "Water" }, { name: "Totodile", type: "Water" }, { name: "Mudkip", type: "Water" } ]
+                },
+                {
+                    myType: "Normal",
+                    availablePartners: [ { name: "Bulbasaur", type: "Grass" }, { name: "Chikorita", type: "Grass" }, { name: "Treecko", type: "Grass" }, { name: "Charmander", type: "Fire" }, { name: "Cyndaquil", type: "Fire" }, { name: "Torchic", type: "Fire" }, { name: "Squirtle", type: "Water" }, { name: "Totodile", type: "Water" }, { name: "Mudkip", type: "Water" }, { name: "Pikachu", type: "Electric" } ]
+                },
+                {
+                    myType: "Ground",
+                    availablePartners: [ { name: "Bulbasaur", type: "Grass" }, { name: "Chikorita", type: "Grass" }, { name: "Treecko", type: "Grass" }, { name: "Charmander", type: "Fire" }, { name: "Cyndaquil", type: "Fire" }, { name: "Torchic", type: "Fire" }, { name: "Squirtle", type: "Water" }, { name: "Totodile", type: "Water" }, { name: "Mudkip", type: "Water" }, { name: "Pikachu", type: "Electric" } ]
+                },
+                {
+                    myType: "Fighting",
+                    availablePartners: [ { name: "Bulbasaur", type: "Grass" }, { name: "Chikorita", type: "Grass" }, { name: "Treecko", type: "Grass" }, { name: "Charmander", type: "Fire" }, { name: "Cyndaquil", type: "Fire" }, { name: "Torchic", type: "Fire" }, { name: "Squirtle", type: "Water" }, { name: "Totodile", type: "Water" }, { name: "Mudkip", type: "Water" }, { name: "Pikachu", type: "Electric" } ]
+                }
+            ],
+            partnerCatalog: [],
+            finalPartner: {},
+            currentHover: "",
+            chosenPartner: false
         }
     },
-    template: `<div>
-        <img :src="computeImage" class="myImage" :style="computeBorder">
-        <p>{{ final.pokemon }}<p>
-        <p>{{ final.personality }}<p>
+    template: `<div v-if="!chosenPartner">
+        <div class="result_div">
+            <div class="result_div_image">
+                <p class="you_your_partner">You</p>
+                <img :src="computeImage" class="myImage" :style="computeBorder">
+            </div>
+
+            <div class="result_div_description">
+                <p>{{ final.pokemon }}</p>
+                <p>{{ final.type }}</p>
+                <p v-if="final.gender">Female</p>
+                <p v-else>Male</p>
+                <p>{{ final.personality }}</p>
+            </div>
+        </div>
+
+        <p id="choose">Choose a Pokémon as your partner</p>
+        <div class="partners_div">
+            {{ computePartners }}
+                
+            <div v-for="partner in partnerCatalog">
+                <img :src="computePartnerImages(partner.name)" 
+                     class="partnerImage"
+                     @mouseover="updateHover(partner)"
+                     @mouseout="updateHover2"
+                     @click="choosePartner(partner)"
+                >
+
+                <p v-if="currentHover == partner.name" class="partners_name">{{ partner.name }}</p>
+                <p v-else id="white_font" class="partners_name">{{ partner.name }}</p>
+            </div>
+        </div>
+        <div class="bottom_space"></div>
+    </div>
+
+    <div v-else>
+        <p class="description">Your Pokémon journey awaits!</p> 
+        <div id="final_result_div">
+            <div class="result_div">
+                <div class="result_div_image">
+                    <p class="you_your_partner">You</p>
+                    <img :src="computeImage" class="myImage" :style="computeBorder">
+                </div>
+
+                <div class="result_div_description2">
+                    <p>{{ final.pokemon }}</p>
+                    <p>{{ final.type }}</p>               
+                    <p v-if="final.gender">Female</p>
+                    <p v-else>Male</p>
+                    <p>{{ final.personality }}</p>
+                </div>
+            </div>
+
+            <div class="result_div">
+                <div class="result_div_image">
+                    <p class="you_your_partner">Your Partner</p>
+                    <img :src="computePartnerImage" class="myImage" :style="computePartnerBorder">
+                </div>
+
+                <div class="result_div_description2">
+                    <p>{{ finalPartner.name }}</p>
+                    <p>{{ finalPartner.type }}</p>
+                    <p v-if="finalPartner.gender">Female</p>
+                    <p v-else>Male</p>
+                    <p>{{ finalPartner.personality }}</p>
+                </div>
+            </div>
+        </div>
     </div>
     `,
     computed: {
         computeImage() {
             return "images/" + this.final.pokemon + ".png";
+        },
+        computePartnerImage() {
+            return "images/" + this.finalPartner.name + ".png";
         },
         computeBorder() {
             let color = "";
@@ -564,10 +689,67 @@ App.component("result", {
                 color = "#F770C0";
             }
             return "border: 8px solid " + color;
+        },
+        computePartnerBorder() {
+            let color = "";
+
+            if (this.finalPartner.gender == 0) {
+                color = "#6080F8";
+            }
+            
+            else {
+                color = "#F770C0";
+            }
+            return "border: 8px solid " + color;
+        },
+        computePartners() {
+            for (let i = 0; i < this.partners.length; i++) {
+                if (this.partners[i].myType == this.final.type) {
+                    this.partnerCatalog = this.partners[i].availablePartners;
+                    break;
+                }
+            }
+
+            return "";
         }
     },
     methods: {
+        computePartnerImages(partner) {
+            return "images/" + partner + ".png";
+        },
+        choosePartner(partner) {
+            let gender = 0;
+            let randNum = 0;
 
+            if (partner.name == "Pikachu") {
+                randNum = 0.5;
+            }
+
+            else {
+                randNum = 0.75;
+            }
+            
+            if (Math.random() < randNum) {
+                gender = 0;
+            }
+
+            else {
+                gender = 1;
+            }
+
+            let personalityCatalog = ["Hardy", "Docile", "Brave", "Jolly", "Impish", "Naive", "Timid", "Hasty", "Sassy", "Calm", "Relaxed", "Lonely", "Quirky"]
+            let personality = personalityCatalog[Math.floor(Math.random() * personalityCatalog.length)];
+
+            this.finalPartner = { name: partner.name, personality: personality, gender: gender, type: partner.type }
+            this.chosenPartner = true;
+            // console.log(this.finalPartner);
+        }, 
+        updateHover(partner) {
+            this.currentHover = partner.name;
+        },
+        updateHover2() {
+            this.currentHover = "";
+        }
     }
 });
   

@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Midterm Project</title>
+    <title>Pokemon Mystery Dungeon</title>
 
     <link rel="stylesheet" href="styles.css" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/3.2.29/vue.global.js"></script>
@@ -13,19 +13,22 @@
 
 </head>
 <body>   
-    <div id="app">
-        <h1>Pokemon Personality Test</h1>
+    <div id="background_purpose">
+        <div id="app">
+            <h1>Pokémon Mystery Dungeon</h1>
+            
+            <p v-if="!completedTest" class="description">Please answer the following questions to determine which Pokémon you are.</p>
+            <p v-else class="description"></p>
 
-        <div>{{lala}}</div>
+            <question v-if="!completedTest" 
+                    @selected-answer2="answerSelected2" 
+                    @selected-answer-final="answerSelectedFinal" 
+                    @pokemon-determined="pokemonDetermined" 
+                    :questions="questions">
+            </question>
 
-        <question v-if="!completedTest" 
-                  @selected-answer2="answerSelected2" 
-                  @selected-answer-final="answerSelectedFinal" 
-                  @pokemon-determined="pokemonDetermined" 
-                  :questions="questions">
-        </question>
-
-        <result v-else :final="finalObject"></result>
+            <result v-else :final="finalObject"></result>
+        </div>
     </div>
 </body>
 </html>
